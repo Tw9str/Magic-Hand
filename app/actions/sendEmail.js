@@ -36,8 +36,8 @@ export async function sendEmailAction(formData) {
   }
 
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-    port: process.env.SMTP_PORT || 587,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -122,10 +122,11 @@ export async function sendEmailAction(formData) {
 
   try {
     await transporter.sendMail({
-      from: `"${formObject.name}" <${formObject.email}>`,
+      from: `"${formObject.name}" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
       subject: formObject.subject,
       html: adminHtml,
+      replyTo: formObject.email,
     });
 
     await transporter.sendMail({
