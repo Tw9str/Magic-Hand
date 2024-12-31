@@ -4,8 +4,10 @@ import Socials from '../widgets/Socials';
 import Link from 'next/link';
 import Form from 'next/form';
 import { sendEmailAction } from '@/app/actions/sendEmail';
+import { useFormStatus } from 'react-dom';
 
 export default function Contact() {
+  const { pending } = useFormStatus();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -122,8 +124,9 @@ export default function Contact() {
               <button
                 type="submit"
                 className="bg-green-500 text-white font-medium px-6 py-3 rounded-lg hover:bg-green-600 transition duration-300"
+                disabled={pending}
               >
-                Verstuur Bericht
+                {pending ? 'Versturen...' : 'Verstuur Bericht'}
               </button>
             </div>
           </Form>
