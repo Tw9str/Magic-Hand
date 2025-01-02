@@ -4,10 +4,8 @@ import Socials from '../widgets/Socials';
 import Link from 'next/link';
 import Form from 'next/form';
 import { sendEmailAction } from '@/app/actions/sendEmail';
-import { useFormStatus } from 'react-dom';
 
 export default function Contact() {
-  const { pending } = useFormStatus();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,6 +15,7 @@ export default function Contact() {
 
   const [errors, setErrors] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +24,9 @@ export default function Contact() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     const result = await sendEmailAction(new FormData(event.target));
+    setLoading(false);
     if (!result.success) {
       setErrors(result.errors || { general: [result.message] });
       setSuccessMessage(null);
@@ -123,10 +124,10 @@ export default function Contact() {
             <div className="md:col-span-2 text-center">
               <button
                 type="submit"
-                className="bg-green-500 text-white font-medium px-6 py-3 rounded-lg hover:bg-green-600 transition duration-300"
-                disabled={pending}
+                className="bg-green-500 text-white font-medium px-6 py-3 rounded-lg hover:bg-green-600 disabled:bg-green-200 transition duration-300"
+                disabled={loading}
               >
-                {pending ? 'Versturen...' : 'Verstuur Bericht'}
+                {loading ? 'Versturen...' : 'Verstuur Bericht'}
               </button>
             </div>
           </Form>
