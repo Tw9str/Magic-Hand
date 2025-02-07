@@ -25,7 +25,14 @@ export default function Contact() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const result = await sendEmailAction(new FormData(event.target));
+
+    const formData = new FormData(event.target);
+
+    if (!formData.has('subject')) {
+      formData.set('subject', '');
+    }
+
+    const result = await sendEmailAction(formData);
     setLoading(false);
     if (!result.success) {
       setErrors(result.errors || { general: [result.message] });
@@ -92,15 +99,25 @@ export default function Contact() {
               >
                 Onderwerp
               </label>
-              <input
-                type="text"
+              <select
                 id="subject"
                 name="subject"
                 value={formData.subject}
                 onChange={handleInputChange}
                 className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Onderwerp van uw bericht"
-              />
+              >
+                <option value="" disabled>
+                  Selecteer een onderwerp
+                </option>
+                <option value="Glasbewassing">Glasbewassing</option>
+                <option value="Vloeronderhoud">Vloeronderhoud</option>
+                <option value="Tapijtreiniging">Tapijtreiniging</option>
+                <option value="Interieurverzorging">Interieurverzorging</option>
+                <option value="Zonnepanelen">Zonnepanelen</option>
+                <option value="Kantoren">Kantoren</option>
+                <option value="Scholen">Scholen</option>
+                <option value="Overig">Overig</option>
+              </select>
             </div>
 
             <div className="flex flex-col md:col-span-2">
